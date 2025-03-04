@@ -13,7 +13,7 @@ setup(
 	install_requires=[
 		'sympy>=1.12',
 		'prettytable>=3.14.0',
-		'antlr4-python3-runtime>=4.11.0'
+		'antlr4-python3-runtime==4.11.0'
 	],
 	python_requires='>=3.8',
 	license='CC BY 4.0',
