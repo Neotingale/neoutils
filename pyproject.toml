@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=75.8.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neoutils"
+version = "1.0.0"
+description = "Librería personal para la materia de Métodos Numéricos"
+readme = "README.md"
+authors = [
+    { name = "Manuel Rodriguez", email = "alu.23130570@correo.itlalaguna.edu.mx" }
+]
+license = { text = "CC BY 4.0" }
+requires-python = ">=3.8"
+dependencies = [
+    "sympy>=1.12",
+    "prettytable>=3.14.0",
+    "antlr4-python3-runtime>=4.11.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/Neotingale/neoutils"
+Repository = "https://github.com/Neotingale/neoutils"
+Issues = "https://github.com/Neotingale/neoutils/issues"
