@@ -5,7 +5,7 @@ setup(
 	version = '1.0.0',
 	description = 'Librería personal para la materia de Métodos Numéricos',
 	author = 'Manuel Rodriguez',
-	url = '',
+	url = 'https://github.com/Neotingale/neoutils',
 	packages = find_packages(),
 	install_requires = [
 		'setuptools>=75.8.0',
