@@ -1,6 +1,6 @@
 from sympy import Symbol, diff
 from prettytable import PrettyTable
-from utils import parseLatex
+from .utils import parseLatex
 
 
 def bisectionMethod (f_x_str : str, lower : float, upper : float, tolerance : float = 1e-6, iterations : int = 50, table : PrettyTable = None) :

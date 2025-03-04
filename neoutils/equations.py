@@ -1,5 +1,5 @@
 import sympy as sp
-from utils import parseLatex
+from .utils import parseLatex
 
 
 def maclaurinSeries(expr_str : str, n : int):
