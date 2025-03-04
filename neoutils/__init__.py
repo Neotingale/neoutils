@@ -1,10 +1,9 @@
-from equations import *
+# from equations import *
 from numerics import *
 from utils import *
 
 
 __all__ = [
-	'maclaurinSeries',
 	
 	'bisectionMethod',
 	'falseRuleMethod',
