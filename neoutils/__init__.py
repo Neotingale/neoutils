@@ -1,6 +1,6 @@
-# from equations import *
-from numerics import *
-from utils import *
+from .equations import *
+from .numerics import *
+from .utils import *
 
 
 __all__ = [
