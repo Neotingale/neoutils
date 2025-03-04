@@ -19,12 +19,14 @@ def bisectionMethod (f_x_str : str, lower : float, upper : float, tolerance : fl
 		x = Symbol('x')
 		f_x = parseLatex(f_x_str)
 		
+		if f_x.subs(x, lower) * f_x.subs(x, upper) > 0 : raise ValueError("La función no cambia de signo en el intervalo dado.")
+		
 		if table : table.field_names = [ "Iteracion", "Lower", "Upper", "Mid", "f(Mid)", "Error" ]
 		
 		for i in range(iterations) :
 			mid = (lower + upper) / 2
 			f_mid = f_x.subs(x, mid)
-			error = abs(f_mid)
+			error = abs(upper - lower) / 2
 			
 			if table : table.add_row([ i + 1, lower, upper, mid, f_mid, error ])
 			
