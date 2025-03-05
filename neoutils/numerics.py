@@ -19,7 +19,7 @@ def bisectionMethod (f_x_str : str, lower : float, upper : float, tolerance : fl
 		x = Symbol('x')
 		f_x = parseLatex(f_x_str)
 		
-		# if f_x.subs(x, lower) * f_x.subs(x, upper) > 0 : raise ValueError("La función no cambia de signo en el intervalo dado.")
+		if f_x.subs(x, lower) * f_x.subs(x, upper) > 0 : raise ValueError("La función no cambia de signo en el intervalo dado.")
 		
 		if table : table.field_names = [ "Iteracion", "Lower", "Upper", "Mid", "f(Mid)", "Error" ]
 		
