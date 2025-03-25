@@ -184,7 +184,7 @@ def secMethod (f_x_str : str, x_irem1 : float, x_i : float, tolerance : float = 
 		print(f"Error: {e}")
 
 
-def jacobiMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : int = 1e-6, iterations : int = 100):
+def jacobiMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float = 1e-6, iterations : int = 100):
 	"""
 	Resuelve el sistema Ax = b usando el metodo de Jacobi con sympy.
 
@@ -210,7 +210,7 @@ def jacobiMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : int = 1
 	raise ValueError(f"Se llegó al límite de iteraciones ({iterations})")
 
 
-def gaussSeidelMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : int = 1e-6, iterations : int = 100):
+def gaussSeidelMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float = 1e-6, iterations : int = 100):
 	"""
 	Resuelve el sistema Ax = b usando el metodo de Gauss-Seidel con sympy.
 
