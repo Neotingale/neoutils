@@ -1,4 +1,4 @@
-from sympy import Symbol, diff
+from sympy import Symbol, diff, Shape, Matrix
 from prettytable import PrettyTable
 from .utils import parseLatex
 
@@ -184,77 +184,56 @@ def secMethod (f_x_str : str, x_irem1 : float, x_i : float, tolerance : float = 
 		print(f"Error: {e}")
 
 
-def jacobiMethod(a_str : str, b_str : str, tol : float = 1e-6, iterations : int = 100, table : PrettyTable = None):
+def jacobiMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : int = 1e-6, iterations : int = 100):
 	"""
-	Metodo de Jacobi.
+	Resuelve el sistema Ax = b usando el metodo de Jacobi con sympy.
 
-	:param a_str: Matriz de coeficientes en formato LaTeX
-	:param b_str: Vector de términos independientes en formato LaTeX
-	:param tol: Tolerancia mínima para la convergencia (Default: 1e-6)
-	:param iterations: Número máximo de iteraciones (Default: 100)
-	:param table: Tabla para almacenar los resultados de cada iteración (Default: None)
-	:return: Aproximación de la solución del sistema
+	:param A: Matriz de coeficientes (sympy.Matrix).
+	:param b: Vector de términos independientes (sympy.Matrix).
+	:param x0: Vector inicial (sympy.Matrix, opcional).
+	:param tolerance: Tolerancia para la convergencia.
+	:param max_iterations: Número máximo de iteraciones.
+	:return: Vector solución.
 	"""
-	try:
-		a = parseLatex(a_str)
-		b = parseLatex(b_str)
-		n = len(b)
-		x_old = [0] * n
+	n = A.Shape[0]
+	x = Matrix.zeros(n, 1) if x0 is None else x0.copy()
+	D = Matrix.diag(*A.diagonal())
+	R = A - D
 
-		if table:
-			table.field_names = ["Iteración"] + [f"x{i+1}" for i in range(n)]
+	for _ in range(iterations):
+		x_new = D.inv() * (b - R * x)
+		error = max(abs(x_new[i] - x[i]) for i in range(n))
+		if error < tolerance:
+			return x_new
+		x = x_new
 
-		for k in range(iterations):
-			x_new = x_old[:]
-			for i in range(n):
-				sum_terms = sum(a[i][j] * x_old[j] for j in range(n) if j != i)
-				x_new[i] = (b[i] - sum_terms) / a[i][i]
-
-			if table:
-				table.add_row([k + 1] + x_new)
-
-			if max(abs(x_new[i] - x_old[i]) for i in range(n)) < tol:
-				return x_new
-
-			x_old = x_new
-
-		raise ValueError(f"El método de Jacobi no convergió en el número máximo de iteraciones ({iterations})")
-	except Exception as e:
-		print(f"Error en el método de Jacobi: {e}")
+	raise ValueError(f"Se llegó al límite de iteraciones ({iterations})")
 
 
-def gaussSeidelMethod(a_str : str, b_str : str, tol : float = 1e-6, iterations : int = 100, table : PrettyTable = None):
+def gaussSeidelMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : int = 1e-6, iterations : int = 100):
 	"""
-	Metodo de Gauss-Seidel.
+	Resuelve el sistema Ax = b usando el metodo de Gauss-Seidel con sympy.
 
-	:param a_str: Matriz de coeficientes en formato LaTeX
-	:param b_str: Vector de términos independientes en formato LaTeX
-	:param tol: Tolerancia mínima para la convergencia (Default: 1e-6)
-	:param iterations: Número máximo de iteraciones (Default: 100)
-	:param table: Tabla para almacenar los resultados de cada iteración (Default: None)
-	:return: Aproximación de la solución del sistema
+	:param A: Matriz de coeficientes (sympy.Matrix).
+	:param b: Vector de términos independientes (sympy.Matrix).
+	:param x0: Vector inicial (sympy.Matrix, opcional).
+	:param tolerance: Tolerancia para la convergencia.
+	:param iterations: Número máximo de iteraciones.
+	:return: Vector solución.
 	"""
-	try:
-		a = parseLatex(a_str)
-		b = parseLatex(b_str)
-		n = len(b)
-		x = [0] * n
+	n = A.Shape[0]
+	x = Matrix.zeros(n, 1) if x0 is None else x0.copy()
 
-		if table:
-			table.field_names = ["Iteración"] + [f"x{i+1}" for i in range(n)]
+	for _ in range(iterations):
+		x_new = x.copy()
+		for i in range(n):
+			s1 = sum(A[i, j] * x_new[j] for j in range(i))
+			s2 = sum(A[i, j] * x[j] for j in range(i+1, n))
+			x_new[i] = (b[i] - s1 - s2) / A[i, i]
 
-		for k in range(iterations):
-			x_old = x[:]
-			for i in range(n):
-				sum_terms = sum(a[i][j] * x[j] for j in range(i)) + sum(a[i][j] * x_old[j] for j in range(i + 1, n))
-				x[i] = (b[i] - sum_terms) / a[i][i]
+		error = max(abs(x_new[i] - x[i]) for i in range(n))
+		if error < tolerance:
+			return x_new
+		x = x_new
 
-			if table:
-				table.add_row([k + 1] + x)
-
-			if max(abs(x[i] - x_old[i]) for i in range(n)) < tol:
-				return x
-
-		raise ValueError(f"El método de Gauss-Seidel no convergió en el número máximo de iteraciones ({iterations})")
-	except Exception as e:
-		print(f"Error en el método de Gauss-Seidel: {e}")
+	raise ValueError(f"Se llegó al límite de iteraciones ({iterations})")
