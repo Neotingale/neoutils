@@ -184,15 +184,16 @@ def secMethod (f_x_str : str, x_irem1 : float, x_i : float, tolerance : float = 
 		print(f"Error: {e}")
 
 
-def jacobiMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float = 1e-6, iterations : int = 100):
+def jacobiMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float = 1e-6, iterations : int = 100, table : PrettyTable = None) :
 	"""
-	Resuelve el sistema Ax = b usando el metodo de Jacobi con sympy.
+	Resuelve el sistema Ax = b usando el metodo de Jacobi.
 
 	:param A: Matriz de coeficientes (sympy.Matrix).
 	:param b: Vector de términos independientes (sympy.Matrix).
 	:param x0: Vector inicial (sympy.Matrix, opcional).
 	:param tolerance: Tolerancia para la convergencia.
-	:param max_iterations: Número máximo de iteraciones.
+	:param iterations: Número máximo de iteraciones.
+	:param table: Objeto PrettyTable para almacenar los resultados (opcional).
 	:return: Vector solución.
 	"""
 	n = A.Shape[0]
@@ -200,31 +201,43 @@ def jacobiMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float =
 	D = Matrix.diag(*A.diagonal())
 	R = A - D
 
-	for _ in range(iterations):
+	if table:
+		table.field_names = ["Iteración"] + [f"x{i+1}" for i in range(n)] + ["Error"]
+
+	for iteration in range(iterations):
 		x_new = D.inv() * (b - R * x)
 		error = max(abs(x_new[i] - x[i]) for i in range(n))
+
+		if table:
+			table.add_row([iteration + 1] + list(x_new) + [error])
+
 		if error < tolerance:
 			return x_new
+
 		x = x_new
 
 	raise ValueError(f"Se llegó al límite de iteraciones ({iterations})")
 
 
-def gaussSeidelMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float = 1e-6, iterations : int = 100):
+def gaussSeidelMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float = 1e-6, iterations : int = 100, table : PrettyTable = None) :
 	"""
-	Resuelve el sistema Ax = b usando el metodo de Gauss-Seidel con sympy.
+	Resuelve el sistema Ax = b usando el metodo de Gauss-Seidel.
 
-	:param A: Matriz de coeficientes (sympy.Matrix).
-	:param b: Vector de términos independientes (sympy.Matrix).
-	:param x0: Vector inicial (sympy.Matrix, opcional).
-	:param tolerance: Tolerancia para la convergencia.
-	:param iterations: Número máximo de iteraciones.
-	:return: Vector solución.
-	"""
+  :param A: Matriz de coeficientes (sympy.Matrix).
+  :param b: Vector de términos independientes (sympy.Matrix).
+  :param x0: Vector inicial (sympy.Matrix, opcional).
+  :param tolerance: Tolerancia para la convergencia.
+  :param iterations: Número máximo de iteraciones.
+  :param table: Objeto PrettyTable para almacenar los resultados (opcional).
+  :return: Vector solución.
+  """
 	n = A.Shape[0]
 	x = Matrix.zeros(n, 1) if x0 is None else x0.copy()
 
-	for _ in range(iterations):
+	if table:
+		table.field_names = ["Iteración"] + [f"x{i+1}" for i in range(n)] + ["Error"]
+
+	for iteration in range(iterations):
 		x_new = x.copy()
 		for i in range(n):
 			s1 = sum(A[i, j] * x_new[j] for j in range(i))
@@ -232,8 +245,13 @@ def gaussSeidelMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : fl
 			x_new[i] = (b[i] - s1 - s2) / A[i, i]
 
 		error = max(abs(x_new[i] - x[i]) for i in range(n))
+
+		if table:
+			table.add_row([iteration + 1] + list(x_new) + [error])
+
 		if error < tolerance:
 			return x_new
+
 		x = x_new
 
 	raise ValueError(f"Se llegó al límite de iteraciones ({iterations})")
