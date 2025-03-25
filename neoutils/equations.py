@@ -16,4 +16,11 @@ def maclaurinSeries(expr_str : str, n : int):
 		return sp.series(expr, x, n)
 	except Exception as e:
 		print(f"Error: {e}")
-	
+
+
+def verifyEquation(equation : str, var : str, var_value : float):
+
+	parseLatex(equation)
+
+def clearEquation(equation : str, var : float):
+	pass

@@ -182,3 +182,79 @@ def secMethod (f_x_str : str, x_irem1 : float, x_i : float, tolerance : float = 
 		raise ValueError(f"Se llegó al límite de iteraciones ({iterations})")
 	except Exception as e :
 		print(f"Error: {e}")
+
+
+def jacobiMethod(a_str : str, b_str : str, tol : float = 1e-6, iterations : int = 100, table : PrettyTable = None):
+	"""
+	Metodo de Jacobi.
+
+	:param a_str: Matriz de coeficientes en formato LaTeX
+	:param b_str: Vector de términos independientes en formato LaTeX
+	:param tol: Tolerancia mínima para la convergencia (Default: 1e-6)
+	:param iterations: Número máximo de iteraciones (Default: 100)
+	:param table: Tabla para almacenar los resultados de cada iteración (Default: None)
+	:return: Aproximación de la solución del sistema
+	"""
+	try:
+		a = parseLatex(a_str)
+		b = parseLatex(b_str)
+		n = len(b)
+		x_old = [0] * n
+
+		if table:
+			table.field_names = ["Iteración"] + [f"x{i+1}" for i in range(n)]
+
+		for k in range(iterations):
+			x_new = x_old[:]
+			for i in range(n):
+				sum_terms = sum(a[i][j] * x_old[j] for j in range(n) if j != i)
+				x_new[i] = (b[i] - sum_terms) / a[i][i]
+
+			if table:
+				table.add_row([k + 1] + x_new)
+
+			if max(abs(x_new[i] - x_old[i]) for i in range(n)) < tol:
+				return x_new
+
+			x_old = x_new
+
+		raise ValueError(f"El método de Jacobi no convergió en el número máximo de iteraciones ({iterations})")
+	except Exception as e:
+		print(f"Error en el método de Jacobi: {e}")
+
+
+def gaussSeidelMethod(a_str : str, b_str : str, tol : float = 1e-6, iterations : int = 100, table : PrettyTable = None):
+	"""
+	Metodo de Gauss-Seidel.
+
+	:param a_str: Matriz de coeficientes en formato LaTeX
+	:param b_str: Vector de términos independientes en formato LaTeX
+	:param tol: Tolerancia mínima para la convergencia (Default: 1e-6)
+	:param iterations: Número máximo de iteraciones (Default: 100)
+	:param table: Tabla para almacenar los resultados de cada iteración (Default: None)
+	:return: Aproximación de la solución del sistema
+	"""
+	try:
+		a = parseLatex(a_str)
+		b = parseLatex(b_str)
+		n = len(b)
+		x = [0] * n
+
+		if table:
+			table.field_names = ["Iteración"] + [f"x{i+1}" for i in range(n)]
+
+		for k in range(iterations):
+			x_old = x[:]
+			for i in range(n):
+				sum_terms = sum(a[i][j] * x[j] for j in range(i)) + sum(a[i][j] * x_old[j] for j in range(i + 1, n))
+				x[i] = (b[i] - sum_terms) / a[i][i]
+
+			if table:
+				table.add_row([k + 1] + x)
+
+			if max(abs(x[i] - x_old[i]) for i in range(n)) < tol:
+				return x
+
+		raise ValueError(f"El método de Gauss-Seidel no convergió en el número máximo de iteraciones ({iterations})")
+	except Exception as e:
+		print(f"Error en el método de Gauss-Seidel: {e}")
