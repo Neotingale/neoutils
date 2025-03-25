@@ -184,7 +184,7 @@ def secMethod (f_x_str : str, x_irem1 : float, x_i : float, tolerance : float = 
 		print(f"Error: {e}")
 
 
-def jacobiMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float = 1e-6, iterations : int = 100, table : PrettyTable = None) :
+def jacobiMethod(A: Matrix, b: Matrix, x0: Matrix = None, tolerance: float = 1e-6, iterations: int = 100, table: PrettyTable = None):
 	"""
 	Resuelve el sistema Ax = b usando el metodo de Jacobi.
 
@@ -212,6 +212,10 @@ def jacobiMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float =
 			table.add_row([iteration + 1] + list(x_new) + [error])
 
 		if error < tolerance:
+			if table:
+				x_decimal = x_new.applyfunc(lambda v: float(v))
+				table.add_row(["Decimales"] + list(x_decimal) + ["-"])
+
 			return x_new
 
 		x = x_new
@@ -219,18 +223,19 @@ def jacobiMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float =
 	raise ValueError(f"Se llegó al límite de iteraciones ({iterations})")
 
 
-def gaussSeidelMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float = 1e-6, iterations : int = 100, table : PrettyTable = None) :
+
+def gaussSeidelMethod(A: Matrix, b: Matrix, x0: Matrix = None, tolerance: float = 1e-6, iterations: int = 100, table: PrettyTable = None):
 	"""
 	Resuelve el sistema Ax = b usando el metodo de Gauss-Seidel.
 
-  :param A: Matriz de coeficientes (sympy.Matrix).
-  :param b: Vector de términos independientes (sympy.Matrix).
-  :param x0: Vector inicial (sympy.Matrix, opcional).
-  :param tolerance: Tolerancia para la convergencia.
-  :param iterations: Número máximo de iteraciones.
-  :param table: Objeto PrettyTable para almacenar los resultados (opcional).
-  :return: Vector solución.
-  """
+	:param A: Matriz de coeficientes (sympy.Matrix).
+	:param b: Vector de términos independientes (sympy.Matrix).
+	:param x0: Vector inicial (sympy.Matrix, opcional).
+	:param tolerance: Tolerancia para la convergencia.
+	:param iterations: Número máximo de iteraciones.
+	:param table: Objeto PrettyTable para almacenar los resultados (opcional).
+	:return: Vector solución.
+	"""
 	n = A.shape[0]
 	x = Matrix.zeros(n, 1) if x0 is None else x0.copy()
 
@@ -250,8 +255,13 @@ def gaussSeidelMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : fl
 			table.add_row([iteration + 1] + list(x_new) + [error])
 
 		if error < tolerance:
+			if table:
+				x_decimal = x_new.applyfunc(lambda v: float(v))
+				table.add_row(["Decimales"] + list(x_decimal) + ["-"])
+
 			return x_new
 
 		x = x_new
 
 	raise ValueError(f"Se llegó al límite de iteraciones ({iterations})")
+
