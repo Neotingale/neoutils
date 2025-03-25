@@ -1,4 +1,4 @@
-from sympy import Symbol, diff, Shape, Matrix
+from sympy import Symbol, diff, Matrix
 from prettytable import PrettyTable
 from .utils import parseLatex
 
@@ -196,7 +196,7 @@ def jacobiMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : float =
 	:param table: Objeto PrettyTable para almacenar los resultados (opcional).
 	:return: Vector solución.
 	"""
-	n = A.Shape[0]
+	n = A.shape[0]
 	x = Matrix.zeros(n, 1) if x0 is None else x0.copy()
 	D = Matrix.diag(*A.diagonal())
 	R = A - D
@@ -231,7 +231,7 @@ def gaussSeidelMethod(A : Matrix, b : Matrix, x0 : Matrix = None, tolerance : fl
   :param table: Objeto PrettyTable para almacenar los resultados (opcional).
   :return: Vector solución.
   """
-	n = A.Shape[0]
+	n = A.shape[0]
 	x = Matrix.zeros(n, 1) if x0 is None else x0.copy()
 
 	if table:
